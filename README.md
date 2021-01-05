@@ -2,11 +2,12 @@
 This mini-program uses pylint and eslint to check for style-guide issues before each commit, keeping the code clean.
 
 ## Installation (Ubuntu)
- * Install PyLint using `sudo apt-get install pylint`
- * Install ESLint with `npm install`
- * Edit the FOLDER variable in the `pre-commit.sh` file. The path is based on your root git path (the same folder of the `.git` file)
- * Copy `pre-commit.sh` into your git repository using `cp pre-commit.sh .git/hooks/pre-commit` or something similar
- * When you are about to commit, it will abort the commit if it finds any errors (based on the configurations).#
+ * Install PyLint using `sudo apt-get install pylint`.
+ * Install ESLint with `npm install`.
+ * Edit the FOLDER variable in the `pre-commit.sh` file. The path is based on your root git path (the same folder of the `.git` file).
+ * Copy `pre-commit.sh` into your git repository using `cp pre-commit.sh .git/hooks/pre-commit` or something similar.
+ * Run `chmod +x .git/hooks/pre-commit`.
+ * When you are about to commit, it will abort the commit if it finds any errors (based on the configurations).
  * Edit `.eslintrc.json` and `pylintrc` to change eslint and pylint rules. You can find more about them at [pylint](http://pylint.pycqa.org/en/latest/technical_reference/features.html) and [eslint](https://eslint.org/docs/rules/).
 
 
