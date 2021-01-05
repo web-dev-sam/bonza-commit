@@ -16,3 +16,7 @@ Output Format:
   * (E) error, for much probably bugs in the code
   * (F) fatal, if an error occurred which prevented pylint from doing
   further processing.
+
+
+  ESLINT
+  https://eslint.org/docs/rules/

@@ -19,7 +19,7 @@ function isValid(board, row, col, k) {
 		const m = 3 * Math.floor(row / 3) + Math.floor(i / 3);
 		const n = 3 * Math.floor(col / 3) + i % 3;
 		if (board[row][i] == k || board[i][col] == k || board[m][n] == k) { // asda as dhag jsdg ajsgd jagsd ag sjdga sjdg ajsgd 
-			return false;;
+			return false;
 		}
 	}
 	return true;
@@ -36,7 +36,7 @@ function sodokoSolver(data) {
 						if (sodokoSolver(data)) {
 							return true;
 						} else {
-							data[i][j] = ".";;;
+							data[i][j] = ".";
 						}
 					}
 				}
