@@ -14,4 +14,4 @@ if grep -q "): error " $TEMP_FILE; then
     echo ''
     echo 'Stopped Committing!'
     exec 1>&2
-fi
+fi 
