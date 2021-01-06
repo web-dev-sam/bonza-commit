@@ -1,0 +1,150 @@
+#!/bin/python
+import inquirer
+import os
+
+# Define colors
+RED = '\033[0;31m'
+GREEN = '\033[0;32m'
+ENDC = '\033[0m'
+GIT_IGNORE = [
+	"bonza",
+	"bonza.log"
+]
+
+def installation(msg, newlines):
+	if newlines: print("\n" + GREEN + msg + ENDC + "\n")
+	else: print(GREEN + msg + ENDC)
+
+def error(msg):
+	print("\n" + RED + msg + ENDC + "\n")
+
+# Check files
+if not os.path.isdir(".git"):
+	error("Error: You must be in the repository root directory to install bonza!")
+	exit(0)
+if not os.path.isdir("bonza"):
+	error("Error: The bonza folder needs to be in the repository root directory to install bonza!" + foldername)
+	exit(0)
+
+
+# Define choices
+choices = {
+	"langs": ["Python", "Javascript"],
+	"files": ["Only changed files", "All files"],
+	"final_confirm": ["Yes", "No"]
+}
+
+# Define all questions
+langs_question = inquirer.Checkbox("langs",
+	message="Which languages do you use? (Press Space to select multiple)",
+	choices=choices["langs"],
+)
+files_question = inquirer.List("files",
+	message="What should bonza check before each commit?",
+	choices=choices["files"],
+)
+final_confirmation = inquirer.List("final_confirm",
+	message="Do you want to proceed?",
+	choices=choices["final_confirm"],
+)
+"""
+path_question = inquirer.Path("path",
+	message="Where is your code located?",
+	validate=lambda _,p: os.path.isdir(p)
+)"""
+
+
+##################
+### Start Form ###
+##################
+
+# Ask for language
+langs = inquirer.prompt([langs_question])["langs"]
+while len(langs) == 0:
+	print(RED + "Please select at least one language. Use Space to select." + ENDC + "\n")
+	langs = inquirer.prompt([langs_question])["langs"]
+
+files_mode = inquirer.prompt([files_question])["files"]
+# path_str = inquirer.prompt([path_question])["path"]
+
+packages = []
+if "Python" in langs: packages.append("PyLint")
+if "Javascript" in langs: packages.append("ESLint")
+error("Proceeding will install: " + ", ".join(packages))
+proceed = inquirer.prompt([final_confirmation])["final_confirm"]
+
+
+
+##################
+## Installation ##
+##################
+
+if proceed == "No":
+	print(RED + "Canceled Installation!" + ENDC + "\n")
+else:
+
+	def install_for_python():
+		installation("Installing PyLint...", True)
+		os.system("sudo apt-get install pylint")
+
+	def install_for_javascript():
+		installation("Installing ESLint...", True)
+		os.system("sudo npm install -g eslint")
+
+	### Install prerequisits
+	for lang in langs:
+		installer = {
+			"Python": install_for_python,
+			"Javascript": install_for_javascript
+		}
+		# installer[lang]()
+	
+	### Install bonza
+	# Add everything to .gitignore
+	installation("Adding bonza to .gitignore...", False)
+	if not os.path.isfile(".gitignore"):
+		# Create gitignore with content
+		f = open(".gitignore", "w")
+		for gi in GIT_IGNORE:
+			f.write(gi + "\n")
+		f.close()
+	else:
+		# Append to existing gitignore
+		lines = open('.gitignore', 'r').readlines()
+		f = open(".gitignore", "a")
+		for gi in GIT_IGNORE:
+			if not any([gi == line.strip() for line in lines]):
+				f.write("\n" + gi)
+
+
+	# Generating git hook
+	installation("Generating pre-commit hook...", False)
+	f = open("bonza/pre-commit.sample", "r")
+	lines = f.readlines()
+	f.close()
+
+	f = open("bonza/pre-commit", "w")
+	for line in lines:
+		if "Javascript" in langs and "#javascript-check#" in line:
+			if files_mode == choices["files"][0]:
+				f.write("  eslint --config \"bonza/.eslintrc.json\" -f visualstudio $JS_FILES | grep -oP $CLEANER #javascript-check#\n")
+			else:
+				f.write("  eslint --config \"bonza/.eslintrc.json\" -f visualstudio . | grep -oP $CLEANER #javascript-check#\n")
+		elif "Python" in langs and "#python-check#" in line:
+			if files_mode == choices["files"][0]:
+				f.write("  pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}()]' $PY_FILES #python-check#\n")
+			else:
+				f.write("  find . -type f -name \"*.py\" | xargs -d '\n' pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#\n")
+		else:
+			f.write(line)
+	f.close()
+
+
+	# Installing git hook
+	os.system("cp bonza/pre-commit .git/hooks/pre-commit")
+	os.system("chmod +x .git/hooks/pre-commit")
+	os.system("chmod +x bonza/pre-commit")
+	os.system("chmod +x bonza/check")
+
+	print(GREEN + "Bonza successfully installed! Use \n  ./bonza/check \nto check without committing. " + ENDC + "\n")
+

@@ -7,10 +7,8 @@
 This mini-program uses pylint and eslint to check for style-guide issues before each commit, keeping the code clean.
 
 ## Installation (Ubuntu)
- * Install PyLint using `sudo apt-get install pylint`.
- * Install ESLint with `npm install -g eslint`.
  * Copy the folder `bonza` into your repository root directory.
- * Run `./bonza/setup`.
+ * Run `./bonza/install`.
 
 When you are about to commit, it will abort the commit if it finds coding-style problems (based on the configurations).
 <br>&nbsp;

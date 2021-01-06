@@ -9,9 +9,8 @@ JS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".js$" | grep 
 
 # Make linter checks
 check () {
-  eslint --config "bonza/.eslintrc.json" -f visualstudio . | grep -oP $CLEANER #javascript-check#
-  find . -type f -name "*.py" | xargs -d '
-' pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#
+  #javascript-check#
+  #python-check#
 }
 
 # Check if script was executed manually using ./bonza/check

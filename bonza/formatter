@@ -1,6 +1,7 @@
 #!/bin/python
 import re
 
+VERSION = "1.1"
 LANGS = ["js", "py"]
 LINTER = {
 	"js": "ESLint",
@@ -38,8 +39,9 @@ def get_stats(messages):
 
 	
 # Get messages
-message_file = open(".log", "r")
+message_file = open("bonza.log", "r")
 messages = message_file.readlines() 
+message_file.close()
 
 messages = apply(BOLD_PURPLE, "^.*\.(%s)" % ("|".join(LANGS)), messages)
 messages = apply(PURPLE, "\(\d+(,?\d*)\):", messages)
@@ -48,7 +50,7 @@ stats = get_stats(messages)
 print()
 print()
 print("  " + BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
-print("  " + BACK_WHITE + BOLD_PURPLE + "    Bonza Commit v1.0    " + ENDC)
+print("  " + BACK_WHITE + BOLD_PURPLE + f"    Bonza Commit v{VERSION}    " + ENDC)
 print("  " + BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
 print()
 print()
