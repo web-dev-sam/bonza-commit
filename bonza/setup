@@ -1,0 +1,2 @@
+cp bonza/pre-commit bonza/../.git/hooks/pre-commit
+chmod +x bonza/../.git/hooks/pre-commit
