@@ -17,7 +17,7 @@ When you are about to commit, it will abort the commit if it finds coding-style 
  
 
 ## Workflow
- * Testing without committing: Run `./bonza/check`.
+ * Testing without committing: Run `git add . && ./bonza/check`.
  * Edit `.eslintrc.json` and `pylintrc` to change eslint and pylint rules. You can find more about them at [pylint](http://pylint.pycqa.org/en/latest/technical_reference/features.html) and [eslint](https://eslint.org/docs/rules/).
 <br>&nbsp;
 
