@@ -5,6 +5,42 @@ CHECK_FOR=("js" "py") # Edit this line to choose checking languages. Available: 
 FOLDER=${PWD##*/} # Equals repo root folder if executed by pre-commit hook
 CLEANER="(?<=$FOLDER/).*" # Regex used to clean output by linters (strips full absolute paths to relative path (to $FOLDER))
 TEMP_FILE=".log"
+PY_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".py$" | grep -v " ")
+JS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".js$" | grep -v "node_modules" | grep -v " ")
+
+
+# Check installations
+for i in ${!CHECK_FOR[@]};
+do
+  lang=${CHECK_FOR[$i]}
+  case "$lang" in
+    'js') 
+      # Check for eslint
+      which eslint &> /dev/null
+      if [[ "$?" == 1 ]]; then
+        echo ""
+        echo -e "\t\033[41m                       \033[0m"
+        echo -e "\t\033[41m Please install ESLint \033[0m"
+        echo -e "\t\033[41m                       \033[0m"
+        echo ""
+        exit 0
+      fi
+      ;;
+    'py') 
+      # Check for pylint
+      which pylint &> /dev/null
+      if [[ "$?" == 1 ]]; then
+        echo ""
+        echo -e "\t\033[41m                       \033[0m"
+        echo -e "\t\033[41m Please install PyLint \033[0m"
+        echo -e "\t\033[41m                       \033[0m"
+        echo ""
+        exit 0
+      fi
+      ;;
+  esac
+done
+
 
 # Make linter checks
 check () {
@@ -12,9 +48,12 @@ check () {
   do
     lang=${CHECK_FOR[$i]}
     case "$lang" in
-      'js') eslint --config bonza/.eslintrc.json -f visualstudio . | grep -oP $CLEANER
+      'js') 
+        eslint --config bonza/.eslintrc.json -f visualstudio $JS_FILES | grep -oP $CLEANER
         ;;
-      'py') find . -type f -name "*.py" | xargs pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]'
+      'py') 
+        #find . -type f -name "*.py" | xargs pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]'
+        pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}()]' $PY_FILES
         ;;
     esac
   done
