@@ -9,15 +9,15 @@ This mini-program uses pylint and eslint to check for style-guide issues before 
 ## Installation (Ubuntu)
  * Install Python 3 and pip
  * Run `pip3 install inquirer`
- * Copy the folder `bonza` into your repository root directory.
- * Run `./bonza/install`.
+ * Copy the folder `.bonza` into your repository root directory.
+ * Run `./.bonza/install`.
 
 When you are about to commit, it will abort the commit if it finds coding-style problems (based on the configurations).
 <br>&nbsp;
  
 
 ## Workflow
- * Testing without committing: Run `git add . && ./bonza/check`.
+ * Testing without committing: Run `git add . && ./.bonza/check`.
  * Edit `.eslintrc.json` and `pylintrc` to change eslint and pylint rules. You can find more about them at [pylint](http://pylint.pycqa.org/en/latest/technical_reference/features.html) and [eslint](https://eslint.org/docs/rules/).
 <br>&nbsp;
 
