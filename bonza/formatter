@@ -1,0 +1,70 @@
+#!/bin/python
+import re
+
+LANGS = ["js", "py"]
+LINTER = {
+	"js": "ESLint",
+	"py": "PyLint"
+}
+BOLD_PURPLE = '\033[1;35m'
+PURPLE = '\033[0;35m'
+BLUE = '\033[0;34m'
+GREEN = '\033[0;32m'
+YELLOW = '\033[0;33m'
+RED = '\033[0;31m'
+BOLD_BLUE = '\033[1;34m'
+GRAY = '\033[3;90m'
+BACK_WHITE = '\033[1;47m'
+ENDC = '\033[0m'
+
+def apply(color, regex, messages):
+	res = []
+	for message in messages:
+		result = re.search(regex, message)
+		if not result: continue
+		position = result.span()
+		res.append(message[:position[0]] + color + message[position[0]:position[1]] + ENDC + message[position[1]:])
+	return res
+
+def get_stats(messages):
+	count = {}
+	for lang in LANGS:
+		count[lang] = 0
+		for message in messages:
+			result = re.search("^.*\." + lang, message)
+			if not result: continue
+			count[lang] += 1
+	return count
+
+	
+# Get messages
+message_file = open(".log", "r")
+messages = message_file.readlines() 
+
+messages = apply(BOLD_PURPLE, "^.*\.(%s)" % ("|".join(LANGS)), messages)
+messages = apply(PURPLE, "\(\d+(,?\d*)\):", messages)
+messages = apply(GRAY, " error .* :", messages)
+stats = get_stats(messages)
+print()
+print()
+print("  " + BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
+print("  " + BACK_WHITE + BOLD_PURPLE + "    Bonza Commit v1.0    " + ENDC)
+print("  " + BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
+print()
+print()
+
+print(BOLD_BLUE + ("%d Style Issues Found: ") % (sum(stats.values())) + ENDC)
+for linter in LINTER:
+	color = GREEN if stats[linter] < 10 else YELLOW if stats[linter] < 25 else RED
+	print("  %s%s: %s%d%s" % (BLUE, LINTER[linter], color, stats[linter], ENDC))
+
+print()
+print()
+
+
+i = 0
+for m in messages:
+	i += 1
+	print(m.strip() + ("\n" if i%5 == 0 else ""))
+print()
+		

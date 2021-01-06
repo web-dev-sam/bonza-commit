@@ -1,23 +1,47 @@
+#!/bin/bash
 
-FOLDER=${PWD##*/}
+# CONFIG
+CHECK_FOR=("js" "py") # Edit this line to choose checking languages. Available: ("js" "py")
+FOLDER=${PWD##*/} # Equals repo root folder if executed by pre-commit hook
+CLEANER="(?<=$FOLDER/).*" # Regex used to clean output by linters (strips full absolute paths to relative path (to $FOLDER))
 TEMP_FILE=".log"
-CLEANER="(?<=$FOLDER/).*"
-COLORING="(error|warning)"
 
-> $TEMP_FILE
-eslint --config bonza/.eslintrc.json -f visualstudio . | grep -oP $CLEANER >> $TEMP_FILE
-find . -type f -name "*.py" | xargs pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' >> $TEMP_FILE
+# Make linter checks
+check () {
+  > $TEMP_FILE
+  for i in ${!CHECK_FOR[@]};
+  do
+    lang=${CHECK_FOR[$i]}
 
+    #alias graygrep ="GREP_COLOR='1;32' grep"
+    case "$lang" in
+      'js') eslint --config bonza/.eslintrc.json -f visualstudio . | grep -oP $CLEANER >> $TEMP_FILE
+        ;;
+      'py') find . -type f -name "*.py" | xargs pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' >> $TEMP_FILE
+        ;;
+    esac
+  done
+}
+
+
+# Prints
+show () {
+  python3 bonza/formatter
+  rm $TEMP_FILE
+}
+
+
+# Check if script was executed manually using ./bonza/check
+if [ "check" == "$1" ]; then
+  check
+  show
+  exit 0
+fi
+
+
+# Output after commit try
 if grep -q "): error " $TEMP_FILE; then
-    echo "Linter Error! Open git log to learn more!"
-    echo ''
-    echo "-------------------------------   LINTER ERRORS   -------------------------------"
-    echo ''
-    cat $TEMP_FILE | grep -P --color $COLORING
-    echo ''
-    echo "-------------------------------   LINTER ERRORS   -------------------------------"
-    echo ''
-    echo 'Stopped Committing!'
-    rm $TEMP_FILE
+    show
+    echo '\033[0;31m Stopped Committing!'
     exit 1
 fi 

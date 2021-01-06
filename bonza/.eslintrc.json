@@ -29,7 +29,7 @@
         ],
         "complexity": [
             "warn",
-            20
+            1
         ],
         "max-nested-callbacks": [
             "error",
