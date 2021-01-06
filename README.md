@@ -6,10 +6,15 @@ This mini-program uses pylint and eslint to check for style-guide issues before 
  * Install ESLint with `npm install -g eslint`.
  * Copy the folder `bonza` into your repository root directory.
  * Run `./bonza/setup`.
- * When you are about to commit, it will abort the commit if it finds any errors (based on the configurations).
+
+When you are about to commit, it will abort the commit if it finds coding-style problems (based on the configurations).
+ 
+
+## Workflow
+ * Testing without committing: Run `./bonza/check`.
  * Edit `.eslintrc.json` and `pylintrc` to change eslint and pylint rules. You can find more about them at [pylint](http://pylint.pycqa.org/en/latest/technical_reference/features.html) and [eslint](https://eslint.org/docs/rules/).
 
-
+ 
 ## Pylint
 Here is an explanation of what PyLint rule-codes mean:
   * (C) convention, for programming standard violation
