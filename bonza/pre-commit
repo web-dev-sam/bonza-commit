@@ -8,40 +8,33 @@ TEMP_FILE=".log"
 
 # Make linter checks
 check () {
-  > $TEMP_FILE
   for i in ${!CHECK_FOR[@]};
   do
     lang=${CHECK_FOR[$i]}
-
-    #alias graygrep ="GREP_COLOR='1;32' grep"
     case "$lang" in
-      'js') eslint --config bonza/.eslintrc.json -f visualstudio . | grep -oP $CLEANER >> $TEMP_FILE
+      'js') eslint --config bonza/.eslintrc.json -f visualstudio . | grep -oP $CLEANER
         ;;
-      'py') find . -type f -name "*.py" | xargs pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' >> $TEMP_FILE
+      'py') find . -type f -name "*.py" | xargs pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]'
         ;;
     esac
   done
 }
 
 
-# Prints
-show () {
-  python3 bonza/formatter
-  rm $TEMP_FILE
-}
-
-
 # Check if script was executed manually using ./bonza/check
 if [ "check" == "$1" ]; then
-  check
-  show
+  echo "$(check)" > $TEMP_FILE
+  python3 bonza/formatter
   exit 0
 fi
 
 
 # Output after commit try
 if grep -q "): error " $TEMP_FILE; then
-    show
-    echo '\033[0;31m Stopped Committing!'
+    echo "$(check)" > $TEMP_FILE
+    python3 bonza/formatter
+    RED='\033[0;31m'
+    echo -e "${RED} Stopped Committing!"
+    echo ""
     exit 1
 fi 
