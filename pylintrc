@@ -18,7 +18,7 @@ ignore-patterns=
 # Pickle collected data for later comparisons.
 persistent=no
 
-# List of plugins (as comma separated values of python modules names) to load,
+# List of plugins (as comma-separated values of python modules names) to load,
 # usually to register additional checkers.
 load-plugins=
 
@@ -42,8 +42,8 @@ extension-pkg-whitelist=
 confidence=
 
 # Enable the message, report, category or checker with the given id(s). You can
-# either give multiple identifier separated by comma (,) or put this option
-# multiple time (only on the command line, not in the configuration file where
+# either give multiple identifiers separated by comma (,) or put this option
+# multiple times (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
 #enable=
 

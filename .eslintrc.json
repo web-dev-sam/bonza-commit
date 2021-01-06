@@ -13,9 +13,6 @@
         "navigator": "readonly",
         "window": "readonly"
     },
-    "plugins": [
-        "promise"
-    ],
     "rules": {
         "no-var": "error",
         "max-depth": [
@@ -592,7 +589,6 @@
             "error",
             "never"
         ],
-        "promise/param-names": "error",
         "linebreak-style": "off"
     }
 }

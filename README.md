@@ -3,7 +3,7 @@ This mini-program uses pylint and eslint to check for style-guide issues before 
 
 ## Installation (Ubuntu)
  * Install PyLint using `sudo apt-get install pylint`.
- * Install ESLint with `npm install`.
+ * Install ESLint with `npm install -g eslint`.
  * Edit the FOLDER variable in the `pre-commit.sh` file. The path is based on your root git path (the same folder of the `.git` file).
  * Copy `pre-commit.sh` into your git repository using `cp pre-commit.sh .git/hooks/pre-commit` or something similar.
  * Run `chmod +x .git/hooks/pre-commit`.
