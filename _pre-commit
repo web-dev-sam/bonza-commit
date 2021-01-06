@@ -1,12 +1,12 @@
 
-FOLDER="demo"
+FOLDER=${PWD##*/}
 TEMP_FILE=".log"
 CLEANER="(?<=$FOLDER/).*"
 COLORING="(error|warning)"
 
 > $TEMP_FILE
-eslint -f visualstudio $FOLDER | grep -oP $CLEANER >> $TEMP_FILE
-pylint --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}] ' $FOLDER | grep -oP $CLEANER >> $TEMP_FILE
+eslint -f visualstudio . | grep -oP $CLEANER >> $TEMP_FILE
+find . -type f -name "*.py" | xargs pylint --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' >> $TEMP_FILE
 
 if grep -q "): error " $TEMP_FILE; then
     echo "Linter Error! Open git log to learn more!"
