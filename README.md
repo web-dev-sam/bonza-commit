@@ -7,6 +7,8 @@
 This mini-program uses pylint and eslint to check for style-guide issues before each commit, keeping the code clean.
 
 ## Installation (Ubuntu)
+ * Install Python 3 and pip
+ * Run `pip3 install inquirer`
  * Copy the folder `bonza` into your repository root directory.
  * Run `./bonza/install`.
 
