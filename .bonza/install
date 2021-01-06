@@ -7,8 +7,8 @@ RED = '\033[0;31m'
 GREEN = '\033[0;32m'
 ENDC = '\033[0m'
 GIT_IGNORE = [
-	"bonza/",
-	"bonza.log"
+	".bonza/",
+	".bonza.log"
 ]
 
 def installation(msg, newlines):
@@ -22,8 +22,8 @@ def error(msg):
 if not os.path.isdir(".git"):
 	error("Error: You must be in the repository root directory to install bonza!")
 	exit(0)
-if not os.path.isdir("bonza"):
-	error("Error: The bonza folder needs to be in the repository root directory to install bonza!" + foldername)
+if not os.path.isdir(".bonza"):
+	error("Error: The .bonza folder needs to be in the repository root directory to install bonza!" + foldername)
 	exit(0)
 
 
@@ -119,32 +119,32 @@ else:
 
 	# Generating git hook
 	installation("Generating pre-commit hook...", False)
-	f = open("bonza/pre-commit.sample", "r")
+	f = open(".bonza/pre-commit.sample", "r")
 	lines = f.readlines()
 	f.close()
 
-	f = open("bonza/pre-commit", "w")
+	f = open(".bonza/pre-commit", "w")
 	for line in lines:
 		if "Javascript" in langs and "#javascript-check#" in line:
 			if files_mode == choices["files"][0]:
-				f.write("  eslint --config \"bonza/.eslintrc.json\" -f visualstudio $JS_FILES | grep -oP $CLEANER #javascript-check#\n")
+				f.write("  eslint --config \".bonza/.eslintrc.json\" -f visualstudio $JS_FILES | grep -oP $CLEANER #javascript-check#\n")
 			else:
-				f.write("  eslint --config \"bonza/.eslintrc.json\" -f visualstudio . | grep -oP $CLEANER #javascript-check#\n")
+				f.write("  eslint --config \".bonza/.eslintrc.json\" -f visualstudio . | grep -oP $CLEANER #javascript-check#\n")
 		elif "Python" in langs and "#python-check#" in line:
 			if files_mode == choices["files"][0]:
-				f.write("  pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}()]' $PY_FILES #python-check#\n")
+				f.write("  pylint --rcfile='.bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}()]' $PY_FILES #python-check#\n")
 			else:
-				f.write("  find . -type f -name \"*.py\" | xargs -d '\n' pylint --rcfile='bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#\n")
+				f.write("  find . -type f -name \"*.py\" | xargs -d '\n' pylint --rcfile='.bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#\n")
 		else:
 			f.write(line)
 	f.close()
 
 
 	# Installing git hook
-	os.system("cp bonza/pre-commit .git/hooks/pre-commit")
+	os.system("cp .bonza/pre-commit .git/hooks/pre-commit")
 	os.system("chmod +x .git/hooks/pre-commit")
-	os.system("chmod +x bonza/pre-commit")
-	os.system("chmod +x bonza/check")
+	os.system("chmod +x .bonza/pre-commit")
+	os.system("chmod +x .bonza/check")
 
-	print(GREEN + "Bonza successfully installed! Use \n  ./bonza/check \nto check without committing. " + ENDC + "\n")
+	print(GREEN + "Bonza successfully installed! Use \n  ./.bonza/check \nto check without committing. " + ENDC + "\n")
 

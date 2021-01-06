@@ -39,7 +39,7 @@ def get_stats(messages):
 
 	
 # Get messages
-message_file = open("bonza.log", "r")
+message_file = open(".bonza/.log", "r")
 messages = message_file.readlines() 
 message_file.close()
 

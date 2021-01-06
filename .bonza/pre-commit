@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# CONFIG
+FOLDER=${PWD##*/} # Equals repo root folder if executed by pre-commit hook
+CLEANER="(?<=$FOLDER/).*" # Regex used to clean output by linters (strips full absolute paths to relative path (to $FOLDER))
+TEMP_FILE=".bonza/.log"
+PY_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".py$" | grep -v " ")
+JS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".js$" | grep -v " " | grep -v "node_modules")
+
+# Make linter checks
+check () {
+  find . -type f -name "*.py" | xargs -d '
+' pylint --rcfile='.bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#
+  eslint --config ".bonza/.eslintrc.json" -f visualstudio . | grep -oP $CLEANER #javascript-check#
+}
+
+checkPython () {
+  if [ "$PY_FILES" != "" ]; then
+  find . -type f -name "*.py" | xargs -d '
+' pylint --rcfile='.bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#
+  fi
+}
+
+checkJavascript () {
+  if [ "$JS_FILES" != "" ]; then
+  eslint --config ".bonza/.eslintrc.json" -f visualstudio . | grep -oP $CLEANER #javascript-check#
+  fi
+}
+
+# Check if script was executed manually using ./.bonza/check
+if [ "check" == "$1" ]; then
+  echo "$(check)" > $TEMP_FILE
+  python3 .bonza/formatter
+  exit 0
+fi
+
+# Output after commit try
+echo "$(check)" > $TEMP_FILE
+if grep -q "): error " $TEMP_FILE; then
+    python3 .bonza/formatter
+    RED='\033[0;31m'
+    echo -e "${RED} Stopped Committing!"
+    echo ""
+    exit 1
+fi 
