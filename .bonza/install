@@ -23,7 +23,7 @@ if not os.path.isdir(".git"):
 	error("Error: You must be in the repository root directory to install bonza!")
 	exit(0)
 if not os.path.isdir(".bonza"):
-	error("Error: The .bonza folder needs to be in the repository root directory to install bonza!" + foldername)
+	error("Error: The .bonza folder needs to be in the repository root directory to install bonza!")
 	exit(0)
 
 
@@ -47,11 +47,6 @@ final_confirmation = inquirer.List("final_confirm",
 	message="Do you want to proceed?",
 	choices=choices["final_confirm"],
 )
-"""
-path_question = inquirer.Path("path",
-	message="Where is your code located?",
-	validate=lambda _,p: os.path.isdir(p)
-)"""
 
 
 ##################
@@ -89,7 +84,7 @@ else:
 
 	def install_for_javascript():
 		installation("Installing ESLint...", True)
-		os.system("sudo npm install -g eslint")
+		os.system("npm install --prefix ./.bonza eslint --save-dev")
 
 	### Install prerequisits
 	for lang in langs:
@@ -97,7 +92,7 @@ else:
 			"Python": install_for_python,
 			"Javascript": install_for_javascript
 		}
-		# installer[lang]()
+		installer[lang]()
 	
 	### Install bonza
 	# Add everything to .gitignore
@@ -127,14 +122,14 @@ else:
 	for line in lines:
 		if "Javascript" in langs and "#javascript-check#" in line:
 			if files_mode == choices["files"][0]:
-				f.write("  eslint --config \".bonza/.eslintrc.json\" -f visualstudio $JS_FILES | grep -oP $CLEANER #javascript-check#\n")
+				f.write("  \"$(git rev-parse --show-toplevel)/.bonza/node_modules/.bin/eslint\" --config \".bonza/config/.eslintrc.json\" -f visualstudio $JS_FILES | grep -oP $CLEANER #javascript-check#\n")
 			else:
-				f.write("  eslint --config \".bonza/.eslintrc.json\" -f visualstudio . | grep -oP $CLEANER #javascript-check#\n")
+				f.write("  \"$(git rev-parse --show-toplevel)/.bonza/node_modules/.bin/eslint\" --config \".bonza/config/.eslintrc.json\" -f visualstudio . | grep -oP $CLEANER #javascript-check#\n")
 		elif "Python" in langs and "#python-check#" in line:
 			if files_mode == choices["files"][0]:
-				f.write("  pylint --rcfile='.bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}()]' $PY_FILES #python-check#\n")
+				f.write("  pylint --rcfile='.bonza/config/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}()]' $PY_FILES #python-check#\n")
 			else:
-				f.write("  find . -type f -name \"*.py\" | xargs -d '\n' pylint --rcfile='.bonza/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#\n")
+				f.write("  find . -type f -name \"*.py\" | xargs -d '\n' pylint --rcfile='.bonza/config/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#\n")
 		else:
 			f.write(line)
 	f.close()
