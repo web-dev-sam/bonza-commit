@@ -84,7 +84,20 @@ else:
 
 	def install_for_javascript():
 		installation("Installing ESLint...", True)
-		os.system("npm install --prefix ./.bonza eslint --save-dev")
+		os.system("npm install --prefix ./.bonza eslint --save-dev --loglevel=error")
+	
+	def get_eslint_command(allfiles, fix, dryfix, normal):
+		base_command = "  \"$(git rev-parse --show-toplevel)/.bonza/node_modules/.bin/eslint\" --config \".bonza/config/.eslintrc.json\" -f visualstudio "
+		filter_command = " | grep -oP $CLEANER\n"
+		if allfiles:
+			if fix: return base_command + ". --fix" + filter_command
+			if dryfix: return base_command + ". --fix-dry-run" + filter_command
+			if normal: return base_command + "." + filter_command
+		else:
+			if fix: return base_command + "$JS_FILES --fix" + filter_command
+			if dryfix: return base_command + "$JS_FILES --fix-dry-run" + filter_command
+			if normal: return base_command + "$JS_FILES" + filter_command
+		return None
 
 	### Install prerequisits
 	for lang in langs:
@@ -120,18 +133,23 @@ else:
 
 	f = open(".bonza/pre-commit", "w")
 	for line in lines:
-		if "Javascript" in langs and "#javascript-check#" in line:
-			if files_mode == choices["files"][0]:
-				f.write("  \"$(git rev-parse --show-toplevel)/.bonza/node_modules/.bin/eslint\" --config \".bonza/config/.eslintrc.json\" -f visualstudio $JS_FILES | grep -oP $CLEANER #javascript-check#\n")
-			else:
-				f.write("  \"$(git rev-parse --show-toplevel)/.bonza/node_modules/.bin/eslint\" --config \".bonza/config/.eslintrc.json\" -f visualstudio . | grep -oP $CLEANER #javascript-check#\n")
-		elif "Python" in langs and "#python-check#" in line:
+		if "Javascript" in langs:
+			cmd = get_eslint_command(
+				allfiles=files_mode == choices["files"][1],
+				fix="#javascript-fix-check#" in line,
+				dryfix="#javascript-dryfix-check#" in line,
+				normal="#javascript-check#" in line
+			)
+			if cmd:
+				f.write(cmd)
+				continue
+		if "Python" in langs and "#python-check#" in line:
 			if files_mode == choices["files"][0]:
 				f.write("  pylint --rcfile='.bonza/config/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}()]' $PY_FILES #python-check#\n")
 			else:
-				f.write("  find . -type f -name \"*.py\" | xargs -d '\n' pylint --rcfile='.bonza/config/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#\n")
-		else:
-			f.write(line)
+				f.write("  find . -type f -name \"*.py\" | xargs -d '\\n' pylint --rcfile='.bonza/config/pylintrc' --msg-template='{path}({line}): error {msg_id} : {msg} [at {obj}]' #python-check#\n")
+			continue
+		f.write(line)
 	f.close()
 
 

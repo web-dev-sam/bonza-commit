@@ -4,7 +4,7 @@
 
 ![](https://raw.githubusercontent.com/MindLaborDev/bonza-commit/main/preview.png)
 
-This mini-program uses pylint and eslint to check for style-guide issues before each commit, keeping the code clean.
+This mini-program uses pylint and eslint to check for coding-style issues before each commit, keeping the code clean.
 
 ## Installation (Ubuntu)
  * Install Python 3 and pip
@@ -13,12 +13,14 @@ This mini-program uses pylint and eslint to check for style-guide issues before 
  * Copy the folder `.bonza` into your repository root directory.
  * Run `./.bonza/install`.
 
-When you are about to commit, it will abort the commit if it finds coding-style problems (based on the configurations).
+When you are about to commit, it will abort the commit if it finds coding-style issues (based on the configurations).
 <br>&nbsp;
  
 
 ## Workflow
- * Testing without committing: Run `./.bonza/check` (if you have checked "Only changed filed" during installation stage your files first using `git add`).
+ * Run `./.bonza/check` for coding-style analysis (if you have checked *Only changed files* during installation stage your files first using the `git add` command).
+ * Use `./.bonza/check --fix` to fix some of the issues automatically (Saves the fixes to your files).
+ * Use `./.bonza/check --dryfix` to fix some of the issues automatically (Doesn't save the fixes; just shows analysis with fixes applied).
  * Edit `.eslintrc.json` and `pylintrc` to change eslint and pylint rules. You can find more about them at [pylint](http://pylint.pycqa.org/en/latest/technical_reference/features.html) and [eslint](https://eslint.org/docs/rules/).
 <br>&nbsp;
 

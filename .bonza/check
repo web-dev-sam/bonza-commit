@@ -1,3 +1,2 @@
 #!/bin/bash
-
-./.bonza/pre-commit check
+./.bonza/pre-commit check $1
