@@ -20,15 +20,15 @@ check () {
   fi
 }
 
+echo "$(check)" > $TEMP_FILE
+
 # Check if script was executed manually using ./.bonza/check
 if [ "check" == "$1" ]; then
-  echo "$(check)" > $TEMP_FILE
   python3 .bonza/formatter $2
   exit 0
 fi
 
 # Output after commit try
-echo "$(check)" > $TEMP_FILE
 if grep -q "): error " $TEMP_FILE; then
     python3 .bonza/formatter $2
     RED='\033[0;31m'
