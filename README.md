@@ -24,13 +24,8 @@ When you are about to commit, it will abort the commit if it finds coding-style 
  * Edit `.eslintrc.json` and `pylintrc` to change eslint and pylint rules. You can find more about them at [pylint](http://pylint.pycqa.org/en/latest/technical_reference/features.html) and [eslint](https://eslint.org/docs/rules/).
 <br>&nbsp;
 
- 
-## Pylint
-Here is an explanation of what PyLint rule-codes mean:
-  * (C) convention, for programming standard violation
-  * (R) refactor, for bad code smell
-  * (W) warning, for python specific problems
-  * (E) error, for much probably bugs in the code
-  * (F) fatal, if an error occurred which prevented pylint from doing further processing.
 
-  
+## Ignoring folders and files
+
+#### Javascript (ESLint)
+Create a `.eslintignore` file in your repository root directory and add the files and folders that you want to exclude from Javascript analysis in there. The syntax is the same as for a `.gitignore` file.
