@@ -45,7 +45,7 @@ message_file.close()
 
 messages = apply(BOLD_PURPLE, r"^.*\.(%s)" % ("|".join(LANGS)), messages)
 messages = apply(PURPLE, r"\(\d+(,?\d*)\):", messages)
-messages = apply(GRAY, r" error .* :", messages)
+messages = apply(GRAY, r" error (.* )?:", messages)
 stats = get_stats(messages)
 print()
 print()
