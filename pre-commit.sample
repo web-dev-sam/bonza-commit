@@ -21,18 +21,15 @@ check () {
 }
 
 echo "$(check)" > $TEMP_FILE
+python3 .bonza/formatter $2
 
 # Check if script was executed manually using ./.bonza/check
 if [ "check" == "$1" ]; then
-  python3 .bonza/formatter $2
   exit 0
 fi
 
 # Output after commit try
 if grep -q "): error " $TEMP_FILE; then
-    python3 .bonza/formatter $2
-    RED='\033[0;31m'
-    echo -e "${RED} Stopped Committing!"
-    echo ""
+    echo -e '\033[0;31mStopped Committing!\n'
     exit 1
 fi 

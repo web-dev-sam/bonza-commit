@@ -49,9 +49,9 @@ messages = apply(GRAY, r" error (.* )?:", messages)
 stats = get_stats(messages)
 print()
 print()
-print("  " + BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
-print("  " + BACK_WHITE + BOLD_PURPLE + f"    Bonza Commit v{VERSION}    " + ENDC)
-print("  " + BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
+print(BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
+print(BACK_WHITE + BOLD_PURPLE + f"    Bonza Commit v{VERSION}    " + ENDC)
+print(BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
 print()
 print()
 
@@ -60,13 +60,17 @@ i = 0
 for m in messages:
 	i += 1
 	print(m.strip() + ("\n" if i%5 == 0 else ""))
-print()
-print()
 		
-		
-print(BOLD_BLUE + ("%d Style Issues Found: ") % (sum(stats.values())) + ENDC)
-for linter in LINTER:
-	color = GREEN if stats[linter] < 10 else YELLOW if stats[linter] < 25 else RED
-	print("  %s%s: %s%d%s" % (BLUE, LINTER[linter], color, stats[linter], ENDC))
+sis = sum(stats.values())
+if sis != 0:
+	print()
+	print()
+	print(BOLD_BLUE + ("%d Style Issues Found: " + ENDC) % (sis))
+	for linter in LINTER:
+		color = GREEN if stats[linter] < 10 else YELLOW if stats[linter] < 25 else RED
+		if stats[linter] != 0:
+			print("  %s%s: %s%d%s" % (BLUE, LINTER[linter], color, stats[linter], ENDC))
+else:
+	print("%s%s%s" % (GREEN, "Amazing! Everything looks great :D", ENDC))
 print()
 print()
