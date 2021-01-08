@@ -10,7 +10,7 @@ This mini-program uses pylint and eslint to check for coding-style issues before
  * Install Python 3 and pip
  * Install npm if you want to check javascript code
  * Run `pip3 install inquirer`
- * Copy the folder `.bonza` into your repository root directory.
+ * Run `git clone https://github.com/MindLaborDev/bonza-commit.git .bonza` in your repository root directory (in same directory as `.git`).
  * Run `./.bonza/install`.
 
 When you are about to commit, it will abort the commit if it finds coding-style issues (based on the configurations).
