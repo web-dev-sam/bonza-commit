@@ -29,3 +29,7 @@ When you are about to commit, it will abort the commit if it finds coding-style 
 
 #### Javascript (ESLint)
 Create a `.eslintignore` file in your repository root directory and add the files and folders that you want to exclude from Javascript analysis in there. The syntax is the same as for a `.gitignore` file.
+<br>&nbsp;
+
+## Troubleshooting
+ * If you get a _pylint syntax error_ even though your code works perfectly fine. Try running pylint with a newer python version. Just edit the `.bonza/install` file or your git hook so pylint gets called using a newer version: `... python3 -m pylint ...`.    
