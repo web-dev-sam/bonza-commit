@@ -5,6 +5,7 @@ import os
 # Define colors
 RED = '\033[0;31m'
 GREEN = '\033[0;32m'
+BOLD_BLUE = '\033[1;34m'
 ENDC = '\033[0m'
 GIT_IGNORE = [
 	".bonza/",
@@ -30,8 +31,9 @@ if not os.path.isdir(".bonza"):
 # Define choices
 choices = {
 	"langs": ["Python", "Javascript"],
-	"files": ["Only changed files", "All files"],
-	"final_confirm": ["Yes", "No"]
+	"files": ["Only staged files", "All files"],
+	"final_confirm": ["Yes", "No"],
+	"hook_confirm": ["No", "Yes"],
 }
 
 # Define all questions
@@ -46,6 +48,10 @@ files_question = inquirer.List("files",
 final_confirmation = inquirer.List("final_confirm",
 	message="Do you want to proceed?",
 	choices=choices["final_confirm"],
+)
+hook_confirmation = inquirer.List("hook_confirm",
+	message="Do you want to overwrite the pre-commit hook? (cannot be undone)",
+	choices=choices["hook_confirm"],
 )
 
 
@@ -154,8 +160,18 @@ else:
 
 
 	# Installing git hook
-	os.system("cp .bonza/pre-commit .git/hooks/pre-commit")
-	os.system("chmod +x .git/hooks/pre-commit")
+	installation("Installing pre-commit hook...", False)
+	if os.path.isfile(".git/hooks/pre-commit"):
+		print(RED + "\n" + "#"*90 +  """\n#### Could not install pre-commit hook as it exists already at .git/hooks/pre-commit. ####\n""" + "#"*90 + ENDC + "\n")
+		proceed = inquirer.prompt([hook_confirmation])["hook_confirm"]
+		if proceed == "Yes":
+			installation("Overwriting pre-commit hook...", False)
+			os.system("cp .bonza/pre-commit .git/hooks/pre-commit")
+		else:
+			print(BOLD_BLUE + "\n" + "#"*80 +  """\n#### Copy .bonza/pre-commit to your git hooks folder to resolve this issue. ####\n""" + "#"*80 + ENDC + "\n")
+
+	if os.path.isfile(".git/hooks/pre-commit"):
+		os.system("chmod +x .git/hooks/pre-commit")
 	os.system("chmod +x .bonza/pre-commit")
 	os.system("chmod +x .bonza/check")
 
