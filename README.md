@@ -13,7 +13,7 @@ This mini-program uses pylint and eslint to check for coding-style issues before
  * Run `git clone https://github.com/MindLaborDev/bonza-commit.git .bonza` in your repository root directory (in same directory as `.git`).
  * Run `python3 .bonza/install`.
 
-When you are about to commit, it will abort the commit if it finds coding-style issues (based on the configurations).
+When you are about to commit, it will abort the commit if it finds coding-style issues (based on the configurations). If you want to enforce a commit use `git commit --no-verify`.
 <br>&nbsp;
  
 
