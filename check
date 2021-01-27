@@ -1,2 +1,2 @@
 #!/bin/bash
-./.bonza/pre-commit check $1
+./.bonza/pre-commit check "$@"

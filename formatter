@@ -1,7 +1,8 @@
 #!/bin/python
 import re
+import sys
 
-VERSION = "1.2"
+VERSION = "1.2.1"
 LANGS = ["js", "py"]
 LINTER = {
 	"js": "ESLint",
@@ -17,6 +18,7 @@ BOLD_BLUE = '\033[1;34m'
 GRAY = '\033[3;90m'
 BACK_WHITE = '\033[1;47m'
 ENDC = '\033[0m'
+COMPACT_MODE = "--compact" in sys.argv
 
 def apply(color, regex, messages):
 	res = []
@@ -26,6 +28,20 @@ def apply(color, regex, messages):
 		position = result.span()
 		res.append(message[:position[0]] + color + message[position[0]:position[1]] + ENDC + message[position[1]:])
 	return res
+
+def splitFiles(regex, messages):
+	rawMessages = {}
+	for message in messages:
+		result = re.search(regex, message)
+		if not result: continue
+		position = result.span()
+		fileName = message[position[0]:position[1]]
+		if fileName not in rawMessages or not rawMessages[fileName]:
+			rawMessages[fileName] = []
+		
+		formattedMessages = apply(GRAY, r"\([\d,]*\): (error|warning) (.* )?:", [message[position[1]:]])
+		if len(formattedMessages) > 0: rawMessages[fileName].append(formattedMessages[0])
+	return rawMessages
 
 def get_stats(messages):
 	count = {}
@@ -43,24 +59,37 @@ message_file = open(".bonza/.log", "r")
 messages = message_file.readlines() 
 message_file.close()
 
-messages = apply(BOLD_PURPLE, r"^.*\.(%s)" % ("|".join(LANGS)), messages)
-messages = apply(PURPLE, r"\(\d+(,?\d*)\):", messages)
-messages = apply(GRAY, r" error (.* )?:", messages)
+if COMPACT_MODE:
+	rawMessages = splitFiles(r"^.*\.(%s)" % ("|".join(LANGS)), messages)
+else:
+	messages = apply(BOLD_PURPLE, r"^.*\.(%s)" % ("|".join(LANGS)), messages)
+	messages = apply(PURPLE, r"\(\d+(,?\d*)\):", messages)
+	messages = apply(GRAY, r" (error|warning) (.* )?:", messages)
+
 stats = get_stats(messages)
 print()
 print()
-print(BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
+print(BACK_WHITE + BOLD_PURPLE + "                           " + ENDC)
 print(BACK_WHITE + BOLD_PURPLE + f"    Bonza Commit v{VERSION}    " + ENDC)
-print(BACK_WHITE + BOLD_PURPLE + "                         " + ENDC)
-print()
-print()
+print(BACK_WHITE + BOLD_PURPLE + "                           " + ENDC)
 
 
-i = 0
-for m in messages:
-	i += 1
-	print(m.strip() + ("\n" if i%5 == 0 else ""))
-		
+if COMPACT_MODE:
+	for f,ms in rawMessages.items():
+		print(f"\n\n{BOLD_PURPLE}{f}:{ENDC}")
+		i = 0
+		for m in ms:
+			i += 1
+			print(m.strip() + ("\n" if i%5 == 0 and i != len(ms) else ""))
+else:
+	print()
+	print()
+	i = 0
+	for m in messages:
+		i += 1
+		print(m.strip() + ("\n" if i%5 == 0 and i != len(messages) else ""))
+
+
 sis = sum(stats.values())
 if sis != 0:
 	print()
