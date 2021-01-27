@@ -39,7 +39,8 @@ def splitFiles(regex, messages):
 		if fileName not in rawMessages or not rawMessages[fileName]:
 			rawMessages[fileName] = []
 		
-		formattedMessages = apply(GRAY, r"\([\d,]*\): (error|warning) (.* )?:", [message[position[1]:]])
+		formattedMessages = apply(PURPLE, r"\([\d,]*\):", [message[position[1]:]])
+		if len(formattedMessages) > 0: formattedMessages = apply(GRAY, r"(error|warning) (.* )?:", [formattedMessages[0]])
 		if len(formattedMessages) > 0: rawMessages[fileName].append(formattedMessages[0])
 	return rawMessages
 
