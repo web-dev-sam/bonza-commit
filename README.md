@@ -42,6 +42,3 @@ Create a `.eslintignore` file in your repository root directory and add the file
  * If you get a _pylint syntax error_ even though your code works perfectly fine. Try running pylint with a newer python version. Just edit the `.bonza/install` file or your git hook so pylint gets called using a newer version: `... python3 -m pylint ...`.    
 
 <br>&nbsp;<br>
-<hr>
-
-![asd](https://img.shields.io/endpoint?url=https%3A%2F%2Fmh.jessemillar.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2FMindLaborDev%2Fbonza-commit.git)
